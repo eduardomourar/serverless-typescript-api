@@ -2,6 +2,9 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import Serverless from 'serverless';
 import Plugin from 'serverless/classes/Plugin';
+import slsOffline from 'serverless-offline';
+import slsDotEnv from 'serverless-dotenv-plugin';
+import slsTypescript from 'serverless-plugin-typescript';
 
 const BUILD_FOLDER = '.build';
 
@@ -40,9 +43,9 @@ export class ServerlessPlugin implements Plugin {
       },
       
     });
-    this.serverless.pluginManager.addPlugin(require('serverless-offline'));
-    this.serverless.pluginManager.addPlugin(require('serverless-dotenv-plugin'));
-    this.serverless.pluginManager.addPlugin(require('serverless-plugin-typescript'));
+    this.serverless.pluginManager.addPlugin(slsOffline);
+    this.serverless.pluginManager.addPlugin(slsDotEnv);
+    this.serverless.pluginManager.addPlugin(slsTypescript);
   }
 
   public async compileResources(): Promise<void> {
