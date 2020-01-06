@@ -39,11 +39,6 @@ export default class SlsTypescriptApi implements SlsPlugin {
     this.debug(`Original plugins: ${JSON.stringify(plugins)}`);
 
     slsService.update({
-      // plugin: plugins.concat([
-      //   'serverless-plugin-typescript',
-      //   'serverless-dotenv-plugin',
-      //   'serverless-offline',
-      // ]),
       provider: {
         name: this.provider,
         runtime: 'nodejs12.x',
