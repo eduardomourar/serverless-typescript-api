@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: package-npm
-          path: serverless-typescript-api-${GITHUB_REF#refs/tags/v}.tgz
+          path: serverless-typescript-api-${GITHUB_REF/refs\/tags\/v/}.tgz
 
   delivery-github:
     name: Delivery to GitHub
@@ -61,4 +61,4 @@ jobs:
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              serverless-typescript-api-${GITHUB_REF#refs/tags/v}.tgz
+              serverless-typescript-api-${GITHUB_REF/refs\/tags\/v/}.tgz
