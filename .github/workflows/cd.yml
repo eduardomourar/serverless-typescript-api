@@ -16,23 +16,27 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - uses: olegtarasov/get-tag@v2
+        id: tag_name
+        with:
+          tagRegex: 'v(.*)'
       - name: Install Dependencies with NPM
         id: installing
         run: |
           npm ci --no-optional
           npm pack
       - name: Upload Changelog
-        id: upload-artifact
+        id: upload_artifact
         uses: actions/upload-artifact@v1
         with:
           name: changelog
           path: CHANGELOG.md
       - name: Upload NPM Artifacts
-        id: upload-npm
+        id: upload_npm
         uses: actions/upload-artifact@v1
         with:
           name: package-npm
-          path: serverless-typescript-api-${GITHUB_REF/refs\/tags\/v/}.tgz
+          path: serverless-typescript-api-${{ steps.tag_name.outputs.tag }}.tgz
 
   delivery-github:
     name: Delivery to GitHub
@@ -40,15 +44,19 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - name: Download Changelog
-        id: download-changelog
+        id: download_changelog
         uses: actions/download-artifact@v1
         with:
           name: changelog
       - name: Download NPM Artifacts
-        id: download-npm
+        id: download_npm
         uses: actions/download-artifact@v1
         with:
           name: package-npm
+      - uses: olegtarasov/get-tag@v2
+        id: tag_name
+        with:
+          tagRegex: 'v(.*)'
       - name: GitHub Release
         id: releasing
         uses: docker://antonyurchenko/git-release:v3.1.2
@@ -61,4 +69,4 @@ jobs:
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              serverless-typescript-api-${GITHUB_REF/refs\/tags\/v/}.tgz
+              serverless-typescript-api-${{ steps.tag_name.outputs.tag }}.tgz
