@@ -7,7 +7,7 @@ on:
       - 'v*'
 
 jobs:
-  publish:
+  delivery:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -22,10 +22,10 @@ jobs:
           npm pack
       - name: Extract Package Details
         id: package
-        uses: Saionaro/extract-package-version@v1.1.1
+        uses: eduardomourar/extract-package-version@v1.1.2-rc
       - name: GitHub Release
         id: releasing
-        uses: anton-yurchenko/git-release@v3.1.2
+        uses: docker://antonyurchenko/git-release:3.1.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRAFT_RELEASE: 'false'
@@ -35,4 +35,4 @@ jobs:
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              serverless-typescript-api-${{ steps.package.outputs.version }}.tgz
+              ${{ steps.package.outputs.name }}-${{ steps.package.outputs.version }}.tgz
