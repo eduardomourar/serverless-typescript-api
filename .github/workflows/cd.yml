@@ -25,40 +25,42 @@ jobs:
         run: |
           npm ci --no-optional
           npm pack
-      - name: Upload Changelog
-        id: upload_artifact
-        uses: actions/upload-artifact@v1
-        with:
-          name: changelog
-          path: CHANGELOG.md
       - name: Upload NPM Artifacts
         id: upload_npm
         uses: actions/upload-artifact@v1
         with:
           name: package-npm
           path: serverless-typescript-api-${{ steps.tag_name.outputs.tag }}.tgz
+      - name: Upload PyPI Artifacts
+        id: upload_pypi
+        uses: actions/upload-artifact@v1
+        with:
+          name: package-pypi
+          path: README.md
 
   delivery-github:
     name: Delivery to GitHub
     needs: delivery-nodejs
     runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@v2
       - uses: olegtarasov/get-tag@v2
         id: tag_name
         with:
           tagRegex: 'v(.*)'
-      - name: Download Changelog
-        id: download_changelog
-        uses: actions/download-artifact@v1
-        with:
-          name: changelog
-          path: CHANGELOG.md
       - name: Download NPM Artifacts
         id: download_npm
         uses: actions/download-artifact@v1
         with:
           name: package-npm
-          path: serverless-typescript-api-${{ steps.tag_name.outputs.tag }}.tgz
+      - name: Download PyPI Artifacts
+        id: download_pypi
+        uses: actions/download-artifact@v1
+        with:
+          name: package-pypi
+      - name: List Artifacts
+        run: |
+          echo ::set-env name=ARTIFACTS::$(echo package-npm/*)
       - name: GitHub Release
         id: releasing
         uses: docker://antonyurchenko/git-release:v3.1.2
@@ -71,4 +73,4 @@ jobs:
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              serverless-typescript-api-${{ steps.tag_name.outputs.tag }}.tgz
+              ${{ env.ARTIFACTS }}
