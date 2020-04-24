@@ -43,20 +43,22 @@ jobs:
     needs: delivery-nodejs
     runs-on: ubuntu-18.04
     steps:
+      - uses: olegtarasov/get-tag@v2
+        id: tag_name
+        with:
+          tagRegex: 'v(.*)'
       - name: Download Changelog
         id: download_changelog
         uses: actions/download-artifact@v1
         with:
           name: changelog
+          path: CHANGELOG.md
       - name: Download NPM Artifacts
         id: download_npm
         uses: actions/download-artifact@v1
         with:
           name: package-npm
-      - uses: olegtarasov/get-tag@v2
-        id: tag_name
-        with:
-          tagRegex: 'v(.*)'
+          path: serverless-typescript-api-${{ steps.tag_name.outputs.tag }}.tgz
       - name: GitHub Release
         id: releasing
         uses: docker://antonyurchenko/git-release:v3.1.2
