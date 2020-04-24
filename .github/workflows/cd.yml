@@ -19,6 +19,10 @@ jobs:
         id: installing
         run: |
           npm ci --no-optional
+          npm pack
+      - name: Extract Package Details
+        id: package
+        uses: eduardomourar/extract-package-version@v1.1.2-rc
       - name: Git Release
         id: releasing
         uses: anton-yurchenko/git-release@v3.1.2
@@ -29,3 +33,6 @@ jobs:
           CHANGELOG_FILE: 'CHANGELOG.md'
           ALLOW_EMPTY_CHANGELOG: 'false'
           ALLOW_TAG_PREFIX: 'true'
+        with:
+          args: |
+              ${{ steps.package.outputs.name }}-${{ steps.package.outputs.version }}.zip

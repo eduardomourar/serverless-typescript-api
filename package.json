@@ -1,14 +1,15 @@
 {
   "name": "serverless-typescript-api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Serverless Framework module containing API backend ready to use AWS Lambda and Typescript",
   "main": "dist/src/index.js",
   "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build",
-    "test": "jest"
+    "build": "npx tsc",
+    "prepack": "npm run build",
+    "test": "npx jest"
   },
   "files": [
+    "CHANGELOG.md",
     "dist",
     "package.json",
     "README.md"
