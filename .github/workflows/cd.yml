@@ -7,7 +7,8 @@ on:
       - 'v*'
 
 jobs:
-  delivery:
+  delivery-nodejs:
+    name: Delivery to NPM
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -23,16 +24,44 @@ jobs:
       - name: Extract Package Details
         id: package
         uses: eduardomourar/extract-package-version@v1.1.2-rc
+      - name: Upload Changelog
+        id: upload-artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: changelog
+          path: CHANGELOG.md
+      - name: Upload NPM Artifacts
+        id: upload-npm
+        uses: actions/upload-artifact@v1
+        with:
+          name: package-npm
+          path: ${{ steps.package.outputs.name }}-${{ steps.package.outputs.version }}.tgz
+
+  delivery-github:
+    name: Delivery to GitHub
+    needs: delivery-nodejs
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Download Changelog
+        id: download-changelog
+        uses: actions/download-artifact@v1
+        with:
+          name: changelog
+      - name: Download NPM Artifacts
+        id: download-npm
+        uses: actions/download-artifact@v1
+        with:
+          name: package-npm
       - name: GitHub Release
         id: releasing
-        uses: docker://antonyurchenko/git-release:3.1.2
+        uses: docker://antonyurchenko/git-release:v3.1.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRAFT_RELEASE: 'false'
           PRE_RELEASE: 'true'
-          CHANGELOG_FILE: 'CHANGELOG.md'
+          CHANGELOG_FILE: changelog
           ALLOW_EMPTY_CHANGELOG: 'false'
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              ${{ steps.package.outputs.name }}-${{ steps.package.outputs.version }}.tgz
+              package-npm
