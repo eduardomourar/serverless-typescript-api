@@ -22,8 +22,8 @@ jobs:
           npm pack
       - name: Extract Package Details
         id: package
-        uses: eduardomourar/extract-package-version@v1.1.2-rc
-      - name: Git Release
+        uses: Saionaro/extract-package-version@v1.1.1
+      - name: GitHub Release
         id: releasing
         uses: anton-yurchenko/git-release@v3.1.2
         env:
@@ -35,4 +35,4 @@ jobs:
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              ${{ steps.package.outputs.name }}-${{ steps.package.outputs.version }}.zip
+              serverless-typescript-api-${{ steps.package.outputs.version }}.tgz
