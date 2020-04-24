@@ -23,7 +23,7 @@ jobs:
           npm pack
       - name: Extract Package Details
         id: package
-        uses: eduardomourar/extract-package-version@v1.1.2-rc
+        uses: Saionaro/extract-package-version@v1.1.1
       - name: Upload Changelog
         id: upload-artifact
         uses: actions/upload-artifact@v1
@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: package-npm
-          path: ${{ steps.package.outputs.name }}-${{ steps.package.outputs.version }}.tgz
+          path: serverless-typescript-api-${{ steps.package.outputs.version }}.tgz
 
   delivery-github:
     name: Delivery to GitHub
