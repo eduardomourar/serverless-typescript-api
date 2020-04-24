@@ -58,9 +58,10 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: package-pypi
+          path: dist/
       - name: List Artifacts
         run: |
-          echo ::set-env name=ARTIFACTS::$(echo package-npm/*)
+          echo ::set-env name=ARTIFACTS::$(echo package-npm/* && echo dist/*)
       - name: GitHub Release
         id: releasing
         uses: docker://antonyurchenko/git-release:v3.1.2
