@@ -21,9 +21,6 @@ jobs:
         run: |
           npm ci --no-optional
           npm pack
-      - name: Extract Package Details
-        id: package
-        uses: Saionaro/extract-package-version@v1.1.1
       - name: Upload Changelog
         id: upload-artifact
         uses: actions/upload-artifact@v1
@@ -35,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: package-npm
-          path: serverless-typescript-api-${{ steps.package.outputs.version }}.tgz
+          path: serverless-typescript-api-${GITHUB_REF#refs/tags/v}.tgz
 
   delivery-github:
     name: Delivery to GitHub
@@ -59,9 +56,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRAFT_RELEASE: 'false'
           PRE_RELEASE: 'true'
-          CHANGELOG_FILE: changelog
+          CHANGELOG_FILE: 'CHANGELOG.md'
           ALLOW_EMPTY_CHANGELOG: 'false'
           ALLOW_TAG_PREFIX: 'true'
         with:
           args: |
-              package-npm
+              serverless-typescript-api-${GITHUB_REF#refs/tags/v}.tgz
