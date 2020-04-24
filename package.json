@@ -1,6 +1,6 @@
 {
   "name": "serverless-typescript-api",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A Serverless Framework module containing API backend ready to use AWS Lambda and Typescript",
   "main": "dist/src/index.js",
   "scripts": {
