@@ -1,0 +1,31 @@
+---
+name: Continuous Delivery (Release)
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: Install Dependencies with NPM
+        id: installing
+        run: |
+          npm ci --no-optional
+      - name: Git Release
+        id: releasing
+        uses: anton-yurchenko/git-release@v3.1.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRAFT_RELEASE: 'false'
+          PRE_RELEASE: 'true'
+          CHANGELOG_FILE: 'CHANGELOG.md'
+          ALLOW_EMPTY_CHANGELOG: 'false'
+          ALLOW_TAG_PREFIX: 'true'
